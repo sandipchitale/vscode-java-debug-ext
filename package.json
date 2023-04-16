@@ -2,7 +2,7 @@
   "name": "vscode-java-debug-ext",
   "displayName": "VSCode Java Debugger Extras",
   "description": "Extends the Debugger for Java extension",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "license": "SEE LICENSE IN LICENSE",
   "icon": "images/icon.png",
   "galleryBanner": {
@@ -40,13 +40,18 @@
     "Other"
   ],
   "activationEvents": [
-    "onLanguage:java",
-    "onDebugInitialConfigurations",
-    "onDebugResolve:java",
-    "onCommand:vscode-java-debug-ext.showType"
   ],
   "main": "./dist/extension.js",
   "contributes": {
+    "views": {
+      "debug": [
+        {
+          "id": "java-debugger-outline",
+          "name": "Java Debugger Outline",
+          "when": "true"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "vscode-java-debug-ext.showType",
@@ -55,6 +60,28 @@
       {
         "command": "vscode-java-debug-ext.showTypeOfContainer",
         "title": "Show Type of Container"
+      },
+      {
+        "command": "vscode-java-debug-ext.showDocumentSymbols",
+        "title": "Show Document Symbols",
+        "when": "editorLangId == 'java'"
+      },
+      {
+        "command": "vscode-java-debug-ext.java-debugger-outline-refresh",
+        "title": "Refresh",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "vscode-java-debug-ext.toggle-classload-breakpoint",
+        "title": "Toggle class load breakpoint"
+      },
+      {
+        "command": "vscode-java-debug-ext.toggle-method-breakpoint",
+        "title": "Toggle method breakpoint"
+      },
+      {
+        "command": "vscode-java-debug-ext.toggle-field-watchpoint",
+        "title": "Toggle field watchpoint"
       }
     ],
     "menus": {
@@ -68,6 +95,30 @@
           "command": "vscode-java-debug-ext.showTypeOfContainer",
           "when": "inDebugMode && debugType == 'java'",
           "group": "1_view@1"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "vscode-java-debug-ext.java-debugger-outline-refresh",
+          "when": "view == java-debugger-outline",
+          "group": "navigation@1"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "vscode-java-debug-ext.toggle-classload-breakpoint",
+          "when": "view == java-debugger-outline && viewItem == java-debugger-outline-class || viewItem == java-debugger-outline-enum || viewItem == java-debugger-outline-interface",
+          "group": "navigation@1"
+        },
+        {
+          "command": "vscode-java-debug-ext.toggle-method-breakpoint",
+          "when": "view == java-debugger-outline && viewItem == java-debugger-outline-constructor || viewItem == java-debugger-outline-method",
+          "group": "navigation@1"
+        },
+        {
+          "command": "vscode-java-debug-ext.toggle-field-watchpoint",
+          "when": "view == java-debugger-outline && viewItem == java-debugger-outline-field || viewItem == java-debugger-outline-constant || viewItem == java-debugger-outline-enum-member",
+          "group": "navigation@1"
         }
       ]
     }
