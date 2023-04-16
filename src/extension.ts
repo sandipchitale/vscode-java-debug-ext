@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 
 
 let debuggerOutlineViewDataProvider: DebuggerOutlineViewDataProvider;
+let timeoutId: NodeJS.Timeout | undefined = undefined;
 
 export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
@@ -27,6 +28,11 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.registerTreeDataProvider('java-debugger-outline', debuggerOutlineViewDataProvider);
 
     vscode.window.onDidChangeActiveTextEditor((activeTextEditor) => {
+        // Cancel previous timeout
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+            timeoutId = undefined;
+        }
         if (activeTextEditor && activeTextEditor.document.languageId === 'java') {
             vscode.commands.executeCommand<vscode.DocumentSymbol[]>('vscode.executeDocumentSymbolProvider', activeTextEditor.document.uri).then((documentSymbols) => {
                 debuggerOutlineViewDataProvider.documentSymbols = documentSymbols;
@@ -71,17 +77,18 @@ export function activate(context: vscode.ExtensionContext) {
     );
 
     // Debounce document symbol updates
-    let tid: NodeJS.Timeout | undefined = undefined;
     vscode.workspace.onDidChangeTextDocument((event) => {
-        if (tid) {
-            clearTimeout(tid);
-            tid = undefined;
+        // Cancel previous timeout
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+            timeoutId = undefined;
         }
         if (event.document.languageId !== 'java') {
+            // Not a Java file - noting to do
             return;
         }
-        tid = setTimeout(() => {
-            tid = undefined;
+        timeoutId = setTimeout(() => {
+            timeoutId = undefined;
             showDocumentSymbols();
         }, 5000);
     });
