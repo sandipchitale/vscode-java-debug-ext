@@ -86,20 +86,60 @@ export function activate(context: vscode.ExtensionContext) {
 
 function setClassLoadBreakpoint(target: any) {
     if (target) {
-        vscode.window.showInformationMessage(`Class load breakpoint on '${target.name + target.detail}' not implemented yet!`);
+        vscode.window.showInformationMessage(`Class load breakpoint on ''${_fqn(target)}' not implemented yet!`);
     }
 }
 
 function setMethodBreakpoint(target: any) {
     if (target) {
-        vscode.window.showInformationMessage(`Method breakpoint on '${target.parentDocumentSymbol.name}.${target.name + target.detail}' not implemented yet!`);
+        const packageDocumentSymbol = _packageDocumentSymbol(target);
+        vscode.window.showInformationMessage(
+            `Method breakpoint on '${_fqn(target)}' not implemented yet!`);
     }
 }
 
 function setFieldWatchpoint(target: any) {
     if (target) {
-        vscode.window.showInformationMessage(`Field watchpoint on '${target.parentDocumentSymbol.name}.${target.name + target.detail}' not implemented yet!`);
+        vscode.window.showInformationMessage(`Field watchpoint on ''${_fqn(target)}' not implemented yet!`);
     }
+}
+
+function _fqn(documentSymbol: vscode.DocumentSymbol): string | undefined {
+    if (documentSymbol) {
+        const packageDocumentSymbol = _packageDocumentSymbol(documentSymbol);
+        const fqnArray: string[] = [];
+        do {
+            if (documentSymbol.kind === vscode.SymbolKind.Method) {
+                fqnArray.unshift(documentSymbol.name+documentSymbol.detail);
+            } else {
+                fqnArray.unshift(documentSymbol.name);
+            }
+            documentSymbol = (documentSymbol as any).parentDocumentSymbol;
+        } while (documentSymbol);
+        if (fqnArray.length > 0) {
+            if (packageDocumentSymbol) {
+                fqnArray.unshift(packageDocumentSymbol.name);
+            }
+            return fqnArray.join('.');
+        }
+    }
+    return undefined;
+}
+
+function _packageDocumentSymbol(documentSymbol: vscode.DocumentSymbol): vscode.DocumentSymbol | undefined {
+    if (documentSymbol.kind === vscode.SymbolKind.Package) {
+        return documentSymbol;
+    }
+    if ((documentSymbol as any).packageDocumentSymbol) {
+        return (documentSymbol as any).packageDocumentSymbol;
+    }
+    do {
+        if ((documentSymbol as any).packageDocumentSymbol) {
+            return (documentSymbol as any).packageDocumentSymbol;
+        }
+        documentSymbol = (documentSymbol as any).parentDocumentSymbol;
+    } while (documentSymbol);
+    return undefined;
 }
 
 async function showDocumentSymbols() {
@@ -266,6 +306,9 @@ export class DebuggerOutlineViewDataProvider implements vscode.TreeDataProvider<
             if (element.children && element.children.length > 0) {
                 element.children.forEach((child: any) => {
                     child.parentDocumentSymbol = element;
+                    // if ((element as any).packageDocumentSymbol) {
+                    //     child.packageDocumentSymbol = (element as any).packageDocumentSymbol;
+                    // }
                 });
             }
             return element.children;
@@ -280,6 +323,17 @@ export class DebuggerOutlineViewDataProvider implements vscode.TreeDataProvider<
 
     set documentSymbols(documentSymbols: vscode.DocumentSymbol[]) {
         this._documentSymbols = documentSymbols;
+
+        // Set the package document symbol as a property on each document symbol
+        if (this._documentSymbols && this._documentSymbols.length > 0) {
+            const packageDocumentSymbol = this._documentSymbols.find(documentSymbol => documentSymbol.kind === vscode.SymbolKind.Package);
+            if (packageDocumentSymbol) {
+                this._documentSymbols.filter(documentSymbol => documentSymbol.kind !== vscode.SymbolKind.Package).forEach(documentSymbol => {
+                    (documentSymbol as any).packageDocumentSymbol = packageDocumentSymbol;
+                });
+            }
+        }
+
         this.refresh();
     }
 
