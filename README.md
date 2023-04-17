@@ -11,12 +11,14 @@ COMING SOON: Java Debugger outline view.
 
 This will allow setting:
 
-- Class load breakpoint
+- Class load breakpoint [ClassPrepareRequest](https://docs.oracle.com/en/java/javase/17/docs/api/jdk.jdi/com/sun/jdi/request/ClassPrepareRequest.html)
 - Constructor and Method breakpoint
   - Overloaded constructors and methods
+  - Constructors and methods Entry [MethodEntryRequest](https://docs.oracle.com/en/java/javase/17/docs/api/jdk.jdi/com/sun/jdi/request/MethodEntryRequest.html)
+  - Constructors and methods Exit [MethodExitRequest](https://docs.oracle.com/en/java/javase/17/docs/api/jdk.jdi/com/sun/jdi/request/MethodExitRequest.html)
 - Field watchpoint
-  - Access watchpoint
-  - Modification watchpoint
+  - Access watchpoint [AccessWatchpointRequest](https://docs.oracle.com/en/java/javase/17/docs/api/jdk.jdi/com/sun/jdi/request/AccessWatchpointRequest.html)
+  - Modification watchpoint [ModificationWatchpointRequest](https://docs.oracle.com/en/java/javase/17/docs/api/jdk.jdi/com/sun/jdi/request/ModificationWatchpointRequest.html)
 ---
 
 UPDATE: For innert types shows all outer types as well.
