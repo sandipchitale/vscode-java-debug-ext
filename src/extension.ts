@@ -2,6 +2,8 @@ import * as vscode from 'vscode';
 
 
 let debuggerOutlineViewDataProvider: DebuggerOutlineViewDataProvider;
+let debuggerOutlineTreeView: vscode.TreeView<vscode.DocumentSymbol>;
+
 let timeoutId: NodeJS.Timeout | undefined = undefined;
 
 export function activate(context: vscode.ExtensionContext) {
@@ -24,8 +26,15 @@ export function activate(context: vscode.ExtensionContext) {
         )
     );
 
+    // Create the debugger outline view data provider
     debuggerOutlineViewDataProvider = new DebuggerOutlineViewDataProvider();
-    vscode.window.registerTreeDataProvider('java-debugger-outline', debuggerOutlineViewDataProvider);
+
+    // Create the debugger outline tree view
+    debuggerOutlineTreeView = vscode.window.createTreeView<vscode.DocumentSymbol>('java-debugger-outline', {
+        treeDataProvider: debuggerOutlineViewDataProvider,
+    });
+
+    // vscode.window.registerTreeDataProvider('java-debugger-outline', debuggerOutlineViewDataProvider);
 
     vscode.window.onDidChangeActiveTextEditor((activeTextEditor) => {
         // Cancel previous timeout
@@ -49,32 +58,11 @@ export function activate(context: vscode.ExtensionContext) {
         )
     );
 
-    context.subscriptions.push(
-        vscode.commands.registerCommand(
-            'vscode-java-debug-ext.toggle-classload-breakpoint',
-            () => {
-                vscode.window.showInformationMessage('Class load breakpoint not implemented yet!');
-            }
-        )
-    );
+    context.subscriptions.push( vscode.commands.registerCommand('vscode-java-debug-ext.toggle-classload-breakpoint', setClassLoadBreakpoint));
 
-    context.subscriptions.push(
-        vscode.commands.registerCommand(
-            'vscode-java-debug-ext.toggle-method-breakpoint',
-            () => {
-                vscode.window.showInformationMessage('Method breakpoint not implemented yet!');
-            }
-        )
-    );
+    context.subscriptions.push( vscode.commands.registerCommand( 'vscode-java-debug-ext.toggle-method-breakpoint', setMethodBreakpoint));
 
-    context.subscriptions.push(
-        vscode.commands.registerCommand(
-            'vscode-java-debug-ext.toggle-field-watchpoint',
-            () => {
-                vscode.window.showInformationMessage('Field watchpoint not implemented yet!');
-            }
-        )
-    );
+    context.subscriptions.push( vscode.commands.registerCommand( 'vscode-java-debug-ext.toggle-field-watchpoint', setFieldWatchpoint));
 
     // Debounce document symbol updates
     vscode.workspace.onDidChangeTextDocument((event) => {
@@ -94,6 +82,24 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
     showDocumentSymbols();
+}
+
+function setClassLoadBreakpoint(target: any) {
+    if (target) {
+        vscode.window.showInformationMessage(`Class load breakpoint on '${target.name + target.detail}' not implemented yet!`);
+    }
+}
+
+function setMethodBreakpoint(target: any) {
+    if (target) {
+        vscode.window.showInformationMessage(`Method breakpoint on '${target.parentDocumentSymbol.name}.${target.name + target.detail}' not implemented yet!`);
+    }
+}
+
+function setFieldWatchpoint(target: any) {
+    if (target) {
+        vscode.window.showInformationMessage(`Field watchpoint on '${target.parentDocumentSymbol.name}.${target.name + target.detail}' not implemented yet!`);
+    }
 }
 
 async function showDocumentSymbols() {
@@ -180,7 +186,16 @@ async function _showType(value: any) {
     }
 }
 
-export function deactivate() {}
+export function deactivate() { }
+
+class DocumentSymbolTreeItem extends vscode.TreeItem {
+    constructor(public readonly documentSymbol: vscode.DocumentSymbol) {
+        super(documentSymbol.name,
+            documentSymbol.children.length > 0
+                ? vscode.TreeItemCollapsibleState.Expanded
+                : vscode.TreeItemCollapsibleState.None);
+    }
+}
 
 export class DebuggerOutlineViewDataProvider implements vscode.TreeDataProvider<vscode.DocumentSymbol>
 {
@@ -193,12 +208,7 @@ export class DebuggerOutlineViewDataProvider implements vscode.TreeDataProvider<
     }
 
     getTreeItem(element: vscode.DocumentSymbol): vscode.TreeItem {
-        const treeItem = new vscode.TreeItem(
-            element.name,
-            element.children.length > 0
-                ? vscode.TreeItemCollapsibleState.Expanded
-                : vscode.TreeItemCollapsibleState.None
-        );
+        const treeItem = new DocumentSymbolTreeItem(element);
         treeItem.tooltip = `${element.name}`;
         treeItem.description = element.detail;
 
@@ -253,6 +263,11 @@ export class DebuggerOutlineViewDataProvider implements vscode.TreeDataProvider<
 
     getChildren(element?: vscode.DocumentSymbol): vscode.ProviderResult<vscode.DocumentSymbol[]> {
         if (element) {
+            if (element.children && element.children.length > 0) {
+                element.children.forEach((child: any) => {
+                    child.parentDocumentSymbol = element;
+                });
+            }
             return element.children;
         } else {
             return this._documentSymbols;
