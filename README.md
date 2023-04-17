@@ -5,12 +5,18 @@ This extends the Debugger for Java VSCode extension.
 ## Features
 
 ---
-COMING SOON: Java Debugger outline view. This will allow setting:
+COMING SOON: Java Debugger outline view.
+
+![Java Debugger Outline View](images/java-debugger-outline-view.png)
+
+This will allow setting:
 
 - Class load breakpoint
 - Constructor and Method breakpoint
   - Overloaded constructors and methods
 - Field watchpoint
+  - Access watchpoint
+  - Modification watchpoint
 ---
 
 UPDATE: For innert types shows all outer types as well.
