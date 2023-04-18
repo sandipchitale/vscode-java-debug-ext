@@ -62,7 +62,9 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push( vscode.commands.registerCommand( 'vscode-java-debug-ext.toggle-method-breakpoint', setMethodBreakpoint));
 
-    context.subscriptions.push( vscode.commands.registerCommand( 'vscode-java-debug-ext.toggle-field-watchpoint', setFieldWatchpoint));
+    context.subscriptions.push(vscode.commands.registerCommand('vscode-java-debug-ext.toggle-field-watchpoint', setFieldWatchpoint));
+
+    context.subscriptions.push( vscode.commands.registerCommand( 'vscode-java-debug-ext.openDocumentSymbol', openDocumentSymbol));
 
     // Debounce document symbol updates
     vscode.workspace.onDidChangeTextDocument((event) => {
@@ -258,6 +260,17 @@ async function _showType(value: any) {
 
 export function deactivate() { }
 
+function openDocumentSymbol(documentSymbol: vscode.DocumentSymbol) {
+    if (documentSymbol) {
+        if ((documentSymbol as any).location) {
+            const location = (documentSymbol as any).location;
+            vscode.window.showTextDocument(location.uri, {
+                selection: documentSymbol.selectionRange,
+            });
+        }
+    }
+}
+
 class DocumentSymbolTreeItem extends vscode.TreeItem {
     constructor(public readonly documentSymbol: vscode.DocumentSymbol) {
         super(documentSymbol.name,
@@ -328,6 +341,11 @@ export class DebuggerOutlineViewDataProvider implements vscode.TreeDataProvider<
                 treeItem.contextValue = `java-debugger-outline-variable`;
                 break;
         }
+        treeItem.command = {
+            command: 'vscode-java-debug-ext.openDocumentSymbol',
+            title: '',
+            arguments: [element]
+        };
         return treeItem;
     }
 
