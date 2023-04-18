@@ -86,21 +86,34 @@ export function activate(context: vscode.ExtensionContext) {
 
 function setClassLoadBreakpoint(target: any) {
     if (target) {
-        vscode.window.showInformationMessage(`Class load breakpoint on ''${_fqn(target)}' not implemented yet!`);
+        const fqn = _fqn(target);
+        if (fqn) {
+            vscode.window.showInformationMessage(`Class load breakpoint on '${fqn}' not implemented yet!`);
+        }
     }
 }
 
 function setMethodBreakpoint(target: any) {
     if (target) {
-        const packageDocumentSymbol = _packageDocumentSymbol(target);
-        vscode.window.showInformationMessage(
-            `Method breakpoint on '${_fqn(target)}' not implemented yet!`);
+        const fqn = _fqn(target);
+        if (fqn) {
+            const functionBreakpoint = new vscode.FunctionBreakpoint(fqn);
+            vscode.debug.addBreakpoints([
+                functionBreakpoint
+            ]);
+            vscode.debug.breakpoints.forEach((breakpoint) => {
+                console.log(`Breakpoint: ${breakpoint}`);
+            });
+        }
     }
 }
 
 function setFieldWatchpoint(target: any) {
     if (target) {
-        vscode.window.showInformationMessage(`Field watchpoint on ''${_fqn(target)}' not implemented yet!`);
+        const fqn = _fqn(target);
+        if (fqn) {
+            vscode.window.showInformationMessage(`Field watchpoint on '${fqn}' not implemented yet!`);
+        }
     }
 }
 
@@ -109,7 +122,11 @@ function _fqn(documentSymbol: vscode.DocumentSymbol): string | undefined {
         const packageDocumentSymbol = _packageDocumentSymbol(documentSymbol);
         const fqnArray: string[] = [];
         do {
-            fqnArray.unshift(documentSymbol.name);
+            if (documentSymbol.kind === vscode.SymbolKind.Constructor || documentSymbol.kind === vscode.SymbolKind.Method) {
+                fqnArray.unshift(`#${documentSymbol.name.replace(/[(].*$/, '')}`);
+            } else {
+                fqnArray.unshift(documentSymbol.name);
+            }
             documentSymbol = (documentSymbol as any).parentDocumentSymbol;
         } while (documentSymbol);
         if (fqnArray.length > 0) {
@@ -118,7 +135,7 @@ function _fqn(documentSymbol: vscode.DocumentSymbol): string | undefined {
             } else {
                 fqnArray.unshift('java.lang');
             }
-            return fqnArray.join('.');
+            return fqnArray.join('.').replace(/\.#/, '#');
         }
     }
     return undefined;
