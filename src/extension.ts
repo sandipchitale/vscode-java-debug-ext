@@ -109,16 +109,14 @@ function _fqn(documentSymbol: vscode.DocumentSymbol): string | undefined {
         const packageDocumentSymbol = _packageDocumentSymbol(documentSymbol);
         const fqnArray: string[] = [];
         do {
-            if (documentSymbol.kind === vscode.SymbolKind.Method) {
-                fqnArray.unshift(documentSymbol.name+documentSymbol.detail);
-            } else {
-                fqnArray.unshift(documentSymbol.name);
-            }
+            fqnArray.unshift(documentSymbol.name);
             documentSymbol = (documentSymbol as any).parentDocumentSymbol;
         } while (documentSymbol);
         if (fqnArray.length > 0) {
             if (packageDocumentSymbol) {
                 fqnArray.unshift(packageDocumentSymbol.name);
+            } else {
+                fqnArray.unshift('java.lang');
             }
             return fqnArray.join('.');
         }
