@@ -123,6 +123,15 @@ function setFieldWatchpoint(target: any) {
 
 function _fqn(documentSymbol: vscode.DocumentSymbol): string | undefined {
     if (documentSymbol) {
+        // Try to figure out package name from location.uri.path '/java.base/java.io/PrintStream.class'
+        let packageName: string | undefined;
+        if ((documentSymbol as any).location && (documentSymbol as any).location.uri.scheme === 'jdt') {
+            const path = (documentSymbol as any).location.uri.path;
+            const pathParts = path.split('/');
+            if (pathParts.length > 2) {
+                packageName = pathParts[2];
+            }
+        }
         const packageDocumentSymbol = _packageDocumentSymbol(documentSymbol);
         const fqnArray: string[] = [];
         do {
@@ -136,6 +145,8 @@ function _fqn(documentSymbol: vscode.DocumentSymbol): string | undefined {
         if (fqnArray.length > 0) {
             if (packageDocumentSymbol) {
                 fqnArray.unshift(packageDocumentSymbol.name);
+            } if (packageName !== undefined) {
+                fqnArray.unshift(packageName);
             } else {
                 fqnArray.unshift('java.lang');
             }
