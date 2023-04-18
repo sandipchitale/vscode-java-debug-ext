@@ -97,13 +97,17 @@ function setMethodBreakpoint(target: any) {
     if (target) {
         const fqn = _fqn(target);
         if (fqn) {
-            const functionBreakpoint = new vscode.FunctionBreakpoint(fqn);
-            vscode.debug.addBreakpoints([
-                functionBreakpoint
-            ]);
-            vscode.debug.breakpoints.forEach((breakpoint) => {
-                console.log(`Breakpoint: ${breakpoint}`);
+            let functionBreakpoint = vscode.debug.breakpoints.find((breakpoint) => {
+                return breakpoint instanceof vscode.FunctionBreakpoint && (breakpoint.functionName === fqn);
             });
+            if (functionBreakpoint) {
+                vscode.debug.removeBreakpoints([functionBreakpoint]);
+            } else {
+                functionBreakpoint = new vscode.FunctionBreakpoint(fqn);
+                vscode.debug.addBreakpoints([
+                    functionBreakpoint
+                ]);
+            }
         }
     }
 }
