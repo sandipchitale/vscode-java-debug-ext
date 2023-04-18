@@ -145,7 +145,7 @@ function _fqn(documentSymbol: vscode.DocumentSymbol): string | undefined {
         if (fqnArray.length > 0) {
             if (packageDocumentSymbol) {
                 fqnArray.unshift(packageDocumentSymbol.name);
-            } if (packageName !== undefined) {
+            } else if (packageName !== undefined) {
                 fqnArray.unshift(packageName);
             } else {
                 fqnArray.unshift('java.lang');
