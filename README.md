@@ -5,7 +5,7 @@ This extends the Debugger for Java VSCode extension.
 ## Features
 
 ---
-COMING SOON: Java Debugger outline view.
+COMING SOON: Java Debugger outline view. This tries to address [vscode-java-debug #1298](https://github.com/microsoft/vscode-java-debug/issues/1298)
 
 ![Java Debugger Outline View](images/java-debugger-outline-view.png)
 
