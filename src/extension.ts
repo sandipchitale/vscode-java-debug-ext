@@ -83,8 +83,63 @@ export function activate(context: vscode.ExtensionContext) {
         }, 5000);
     });
 
+
+    // vscode.debug.onDidChangeBreakpoints(async (breakpointsEvent) => {
+    //     if (breakpointsEvent.added.length > 0) {
+    //         for (const breakpoint of breakpointsEvent.added) {
+    //             if (breakpoint instanceof vscode.SourceBreakpoint) {
+    //                 await _tryToConvertSourceBreakpointToFunctionBreakpoint(breakpoint);
+    //             }
+    //         }
+    //     }
+    //     if (breakpointsEvent.changed.length > 0) {
+    //         for (const breakpoint of breakpointsEvent.changed) {
+    //             if (breakpoint instanceof vscode.SourceBreakpoint) {
+    //                 await _tryToConvertSourceBreakpointToFunctionBreakpoint(breakpoint);
+    //             }
+    //         }
+    //     }
+    // });
+
     showDocumentSymbols();
 }
+
+// async function _tryToConvertSourceBreakpointToFunctionBreakpoint(sourceBreakpoint: vscode.SourceBreakpoint) {
+//     if (vscode.window.activeTextEditor && vscode.window.activeTextEditor.document.languageId === 'java') {
+//         const lineAt = await vscode.window.activeTextEditor.document.lineAt(sourceBreakpoint.location.range.start.line);
+//         if (lineAt.text.trim().length > 0) {
+//             let indexOf = lineAt.text.indexOf('(');
+//             if (indexOf > 0) {
+//                 indexOf -= 1;
+//                 const hovers = await vscode.commands.executeCommand<vscode.Hover[]>('vscode.executeHoverProvider',
+//                     sourceBreakpoint.location.uri,
+//                     new vscode.Position(sourceBreakpoint.location.range.start.line, indexOf));
+//                 if (hovers && hovers.length > 0 && hovers[0].contents.length > 0) {
+//                     const content = hovers[0].contents[0];
+//                     if (content instanceof vscode.MarkdownString) {
+//                         const value = content.value.toString().replace('\n```java\n', '').replace('\n```\n', '').trim();
+//                         if (value.length > 0) {
+//                             const matches = value.match(/.*\S*\s+([a-zA-Z._$]+)\(.*/);
+//                             if (matches && matches.length > 1) {
+//                                 const fqn = matches[1].replace(/\.([^.]+)$/, '#$1');
+//                                 let functionBreakpoint = vscode.debug.breakpoints.find((breakpoint) => {
+//                                     return breakpoint instanceof vscode.FunctionBreakpoint && (breakpoint.functionName === fqn);
+//                                 });
+//                                 if (!functionBreakpoint) {
+//                                     functionBreakpoint = new vscode.FunctionBreakpoint(`${fqn}`);
+//                                     vscode.debug.addBreakpoints([functionBreakpoint]);
+//                                     setTimeout(() => {
+//                                         vscode.debug.removeBreakpoints([sourceBreakpoint]);
+//                                     }, 500);
+//                                 }
+//                             }
+//                         }
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// }
 
 function setClassLoadBreakpoint(target: any) {
     if (target) {
