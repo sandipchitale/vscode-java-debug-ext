@@ -2,7 +2,7 @@
   "name": "vscode-java-debug-ext",
   "displayName": "VSCode Java Debugger Extras",
   "description": "Extends the Debugger for Java extension",
-  "version": "1.0.29",
+  "version": "1.0.30",
   "license": "SEE LICENSE IN LICENSE",
   "icon": "images/icon.png",
   "galleryBanner": {
@@ -40,6 +40,7 @@
     "Other"
   ],
   "activationEvents": [
+    "onView:viewId=java-debugger-outline"
   ],
   "main": "./dist/extension.js",
   "contributes": {
