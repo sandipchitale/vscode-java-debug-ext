@@ -4,8 +4,20 @@ This extends the Debugger for Java VSCode extension.
 
 ## Features
 
+Adds the following command(s):
+
+|Command Name|Command ID|Description|
+|-|-|-|
+|```Show Type```|```vscode-java-debug-ext.showType```|Show the Open Type quick pick for type of the variable node. If the type of variable is inner type it may first prompt for each of the parent types and the innermost type.|
+|```Show Type of Container```|```vscode-java-debug-ext.showTypeOfContainer```|Show the Open Type quick pick for type of the parent of variable node. If the type of container of variable is inner type it may first prompt for each of the parent types and the innermost type.|
+
+This basically addresses [Provide "Open type" button in variables' menu](https://github.com/microsoft/vscode-java-debug/issues/1104)
+
+![Show Type Command](images/variable-show-type.png)
+![Open Type Quick Pick](images/variable-open-type.png)
+
 ---
-COMING SOON: Java Debugger outline view. This tries to address [vscode-java-debug #1298](https://github.com/microsoft/vscode-java-debug/issues/1298)
+COMING SOON: Java Debugger outline view. This tries to address [vscode-java-debug issue 1298](https://github.com/microsoft/vscode-java-debug/issues/1298)
 
 ![Java Debugger Outline View](images/java-debugger-outline-view.png)
 
@@ -24,19 +36,6 @@ This will allow setting:
 UPDATE: For innert types shows all outer types as well.
 
 UPDATE: Use fully qualified name for types.
-
-
-Adds the following command(s):
-
-|Command Name|Command ID|Description|
-|-|-|-|
-|```Show Type```|```vscode-java-debug-ext.showType```|Show the Open Type quick pick for type of the variable node. If the type of variable is inner type it may first prompt for each of the parent types and the innermost type.|
-|```Show Type of Container```|```vscode-java-debug-ext.showTypeOfContainer```|Show the Open Type quick pick for type of the parent of variable node. If the type of container of variable is inner type it may first prompt for each of the parent types and the innermost type.|
-
-This basically addresses [Provide "Open type" button in variables' menu](https://github.com/microsoft/vscode-java-debug/issues/1104)
-
-![Show Type Command](images/variable-show-type.png)
-![Open Type Quick Pick](images/variable-open-type.png)
 
 ## Known Issues
 
