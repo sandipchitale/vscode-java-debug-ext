@@ -14,6 +14,7 @@ Adds the following command(s):
 This basically addresses [Provide "Open type" button in variables' menu](https://github.com/microsoft/vscode-java-debug/issues/1104)
 
 ![Show Type Command](images/variable-show-type.png)
+
 ![Open Type Quick Pick](images/variable-open-type.png)
 
 ---
