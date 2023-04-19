@@ -32,6 +32,7 @@ export function activate(context: vscode.ExtensionContext) {
     // Create the debugger outline tree view
     debuggerOutlineTreeView = vscode.window.createTreeView<vscode.DocumentSymbol>('java-debugger-outline', {
         treeDataProvider: debuggerOutlineViewDataProvider,
+        showCollapseAll: true
     });
 
     // vscode.window.registerTreeDataProvider('java-debugger-outline', debuggerOutlineViewDataProvider);
@@ -227,6 +228,11 @@ function _packageDocumentSymbol(documentSymbol: vscode.DocumentSymbol): vscode.D
         documentSymbol = (documentSymbol as any).parentDocumentSymbol;
     } while (documentSymbol);
     return undefined;
+}
+
+async function collapseAll() {
+    if (debuggerOutlineTreeView) {
+    }
 }
 
 async function showDocumentSymbols() {
