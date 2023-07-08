@@ -183,13 +183,17 @@ function _fqn(documentSymbol: vscode.DocumentSymbol): string | undefined {
     if (documentSymbol) {
         // Try to figure out package name from location.uri.path '/java.base/java.io/PrintStream.class'
         let packageName: string | undefined;
-        if ((documentSymbol as any).location && (documentSymbol as any).location.uri.scheme === 'jdt') {
-            const path = (documentSymbol as any).location.uri.path;
-            const pathParts = path.split('/');
-            if (pathParts.length > 2) {
-                packageName = pathParts[2];
-            }
-        }
+        // The following issues have been fixed:
+        // https://github.com/redhat-developer/vscode-java/issues/3074
+        // https://github.com/eclipse/eclipse.jdt.ls/issues/2617
+        // Therefore the following block is no longer needed.
+        // if ((documentSymbol as any).location && (documentSymbol as any).location.uri.scheme === 'jdt') {
+        //     const path = (documentSymbol as any).location.uri.path;
+        //     const pathParts = path.split('/');
+        //     if (pathParts.length > 2) {
+        //         packageName = pathParts[2];
+        //     }
+        // }
         const packageDocumentSymbol = _packageDocumentSymbol(documentSymbol);
         const fqnArray: string[] = [];
         do {

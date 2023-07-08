@@ -17,10 +17,14 @@ This basically addresses [Provide "Open type" button in variables' menu](https:/
 
 ![Open Type Quick Pick](images/variable-open-type.png)
 
----
-COMING SOON: Java Debugger outline view. This tries to address [vscode-java-debug issue 1298](https://github.com/microsoft/vscode-java-debug/issues/1298)
+UPDATE: For innert types shows all outer types as well.
 
-![Java Debugger Outline View](images/java-debugger-outline-view.png)
+UPDATE: Use fully qualified name for types.
+
+---
+Outline (Java Debugger) view (formerly Java Debugger outline) to address [vscode-java-debug issue 1298](https://github.com/microsoft/vscode-java-debug/issues/1298) allowing direct seeting of method(aka function) breakpoint.
+
+![Outline (Java Debugger)](images/java-debugger-outline-view.png)
 
 This will allow setting:
 
@@ -29,18 +33,24 @@ This will allow setting:
   - Overloaded constructors and methods (Not possible because of the limitations of VSCode Java Debug support even though it is supported by the Java Debugger API)
   - All overloaded Constructors and methods Entry [MethodEntryRequest](https://docs.oracle.com/en/java/javase/17/docs/api/jdk.jdi/com/sun/jdi/request/MethodEntryRequest.html)
   - Constructors and methods Exit [MethodExitRequest](https://docs.oracle.com/en/java/javase/17/docs/api/jdk.jdi/com/sun/jdi/request/MethodExitRequest.html)
+
+**NOTE** The method entry breakpoint is implemented.
+
 - Field watchpoint
   - Access watchpoint [AccessWatchpointRequest](https://docs.oracle.com/en/java/javase/17/docs/api/jdk.jdi/com/sun/jdi/request/AccessWatchpointRequest.html)
   - Modification watchpoint [ModificationWatchpointRequest](https://docs.oracle.com/en/java/javase/17/docs/api/jdk.jdi/com/sun/jdi/request/ModificationWatchpointRequest.html)
 ---
 
-UPDATE: For innert types shows all outer types as well.
-
-UPDATE: Use fully qualified name for types.
-
 ## Known Issues
 
 This works well when ```toString()``` for Object types is disabled in Variables view.
+
+The following issues have been fixed:
+
+https://github.com/redhat-developer/vscode-java/issues/3074
+https://github.com/eclipse/eclipse.jdt.ls/issues/2617
+
+This means the package node is displayed for library classes in the outline view.
 
 ## Requirements
 
