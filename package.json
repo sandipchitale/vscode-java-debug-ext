@@ -19,7 +19,8 @@
     "java",
     "debug",
     "debugging",
-    "debugger"
+    "debugger",
+    "breakpoints"
   ],
   "extensionDependencies": [
     "vscjava.vscode-java-debug"
@@ -36,7 +37,6 @@
   },
   "categories": [
     "Debuggers",
-    "Breakpoints",
     "Programming Languages",
     "Other"
   ],
